@@ -1,17 +1,17 @@
 package com.example.SimpleSpringProject.entity;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Data
 @Entity
 public class Prediction {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String text;
-    private boolean isPositive;
 
-
+    private boolean positive;
 }
