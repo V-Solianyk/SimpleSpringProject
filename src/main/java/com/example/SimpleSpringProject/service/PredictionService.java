@@ -15,7 +15,7 @@ public interface PredictionService {
 
     Prediction update(Prediction prediction);
 
-    void delete();
+    void delete(Long id);
 
 
 }

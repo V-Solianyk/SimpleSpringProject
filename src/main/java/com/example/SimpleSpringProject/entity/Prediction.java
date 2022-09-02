@@ -11,6 +11,7 @@ public class Prediction {
     @Id
     private Long id;
     private String text;
+    private boolean isPositive;
 
 
 }

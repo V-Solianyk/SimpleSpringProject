@@ -5,8 +5,11 @@ import com.example.SimpleSpringProject.repository.PredictionRepository;
 import com.example.SimpleSpringProject.service.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PredictionServiceImpl implements PredictionService {
     private final PredictionRepository predictionRepository;
@@ -18,21 +21,20 @@ public class PredictionServiceImpl implements PredictionService {
 
     @Override
     public List<Prediction> getAll() {
-        predictionRepository.findAll();
-        // todo
-        return null;
+
+        return predictionRepository.findAll().stream()
+                .peek(prediction -> prediction.setText("Hello " + prediction.getText()))
+                .collect(Collectors.toList());
+
     }
 
     @Override
     public Prediction get(Long id) {
-        var predictionOptional = predictionRepository.findById(id);
-        if (predictionOptional.isPresent()) {
-            var prediction = predictionOptional.get();
-            prediction.setText("Hello " + prediction.getText());
-            return prediction;
-        } else {
-            throw new RuntimeException("Prediction not found!");
-        }
+        var prediction = predictionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prediction not found for ID : " + id));
+        prediction.setText("Hello " + prediction.getText());
+
+        return prediction;
     }
 
     @Override
@@ -43,21 +45,16 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public Prediction update(Prediction prediction) {
         var id = prediction.getId();
-        Optional<Prediction> optionalPrediction = predictionRepository.findById(id);
-        if (optionalPrediction.isPresent()){
-            Prediction prediction1 = optionalPrediction.get();
-            prediction1.setText(prediction.getText());
-            return prediction1;
+        var predictionOld = predictionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prediction doesn't exist at this address."));
+        predictionOld.setText(prediction.getText());
+        predictionOld.setPositive(prediction.isPositive());
 
-        } else {
-            throw new RuntimeException("Prediction doesn't exist at this address.");
-        }
-
-
+        return predictionOld;
     }
 
     @Override
-    public void delete() {
-
+    public void delete(Long id) {
+        predictionRepository.deleteById(id);
     }
 }
