@@ -1,19 +1,18 @@
 package com.example.SimpleSpringProject.service;
 
 import com.example.SimpleSpringProject.entity.Prediction;
-import org.springframework.stereotype.Service;
+import com.example.SimpleSpringProject.model.PredictionModel;
 
 import java.util.List;
 
-//@Service
 public interface PredictionService {
-    List<Prediction> getAll();
+    List< PredictionModel> getAll();
 
-    Prediction get(Long id);
+    PredictionModel get(Long id);
 
-    Prediction create(Prediction prediction);
+    Prediction create(PredictionModel predictionModel);
 
-    Prediction update(Prediction prediction);
+    Prediction update(Long id, PredictionModel predictionModel);
 
     void delete(Long id);
 

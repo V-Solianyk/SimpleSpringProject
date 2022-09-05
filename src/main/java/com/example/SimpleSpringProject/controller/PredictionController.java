@@ -1,6 +1,7 @@
 package com.example.SimpleSpringProject.controller;
 
 import com.example.SimpleSpringProject.entity.Prediction;
+import com.example.SimpleSpringProject.model.PredictionModel;
 import com.example.SimpleSpringProject.service.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,19 +20,31 @@ public class PredictionController {
     }
 
     @GetMapping
-    List<Prediction> getAll() {
+    List<PredictionModel> getAll() {
         return predictionService.getAll();
     }
 
     @GetMapping("/{id}")
-    Prediction get(@PathVariable Long id) {
+    PredictionModel get(@PathVariable Long id) {
         return predictionService.get(id);
     }
 
 
     @PostMapping
-    Prediction create(@RequestBody Prediction prediction) {
-        return predictionService.create(prediction);
+    Prediction create(@RequestBody PredictionModel predictionModel) {
+        return predictionService.create(predictionModel);
     }
+
+    @PutMapping("/{id}")
+    Prediction update(@PathVariable Long id, @RequestBody PredictionModel predictionModel) {
+        return predictionService.update(id, predictionModel);
+
+    }
+
+    @DeleteMapping("/{id}")
+    void deletePredictionById(@PathVariable Long id) {
+        predictionService.delete(id);
+    }
+
 
 }
