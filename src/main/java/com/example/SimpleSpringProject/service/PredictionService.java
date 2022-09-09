@@ -6,7 +6,9 @@ import com.example.SimpleSpringProject.model.PredictionModel;
 import java.util.List;
 
 public interface PredictionService {
-    List< PredictionModel> getAll();
+    List<PredictionModel> getAll();
+
+    List<PredictionModel> getAllByPositive(boolean isPositive);
 
     PredictionModel get(Long id);
 
