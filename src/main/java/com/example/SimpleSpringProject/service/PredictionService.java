@@ -3,12 +3,18 @@ package com.example.SimpleSpringProject.service;
 import com.example.SimpleSpringProject.entity.Prediction;
 import com.example.SimpleSpringProject.model.PredictionModel;
 
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 public interface PredictionService {
     List<PredictionModel> getAll();
 
-    List<PredictionModel> getAllByPositive(boolean isPositive);
+    List<PredictionModel> getAllByPositive(boolean isPositive, Pageable pageable);
+
+    List<PredictionModel> getAllByTextContainsIgnoreCase(String keyword);
+
+    List<PredictionModel> getAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword);
 
     PredictionModel get(Long id);
 

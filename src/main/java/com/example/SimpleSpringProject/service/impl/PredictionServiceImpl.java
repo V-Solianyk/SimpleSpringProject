@@ -6,10 +6,12 @@ import com.example.SimpleSpringProject.model.PredictionModel;
 import com.example.SimpleSpringProject.repository.PredictionRepository;
 import com.example.SimpleSpringProject.service.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class PredictionServiceImpl implements PredictionService {
@@ -30,14 +32,28 @@ public class PredictionServiceImpl implements PredictionService {
 
     @Override
     public List<PredictionModel> getAll() {
-        return predictionRepository.findAll().stream()
+        return StreamSupport.stream(predictionRepository.findAll().spliterator(),false)
                 .map(predictionMapper::predictionToPredictionModel)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PredictionModel> getAllByPositive(boolean isPositive) {
-        return predictionRepository.findAllByPositive(isPositive).stream()
+    public List<PredictionModel> getAllByPositive(boolean isPositive, Pageable pageable) {
+        return predictionRepository.findAllByPositive(isPositive,pageable).stream()
+                .map(predictionMapper::predictionToPredictionModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PredictionModel> getAllByTextContainsIgnoreCase(String keyword) {
+        return predictionRepository.findAllByTextContainsIgnoreCase(keyword).stream()
+                .map(predictionMapper::predictionToPredictionModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PredictionModel> getAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword) {
+       return predictionRepository.findAllByPositiveAndTextContainsIgnoreCase(isPositive,keyword).stream()
                 .map(predictionMapper::predictionToPredictionModel)
                 .collect(Collectors.toList());
     }
@@ -52,7 +68,6 @@ public class PredictionServiceImpl implements PredictionService {
 
     @Override
     public Prediction create(PredictionModel predictionModel) {
-        checkPredictionModelTextIsValid(predictionModel);
         Prediction prediction = predictionMapper.predictionModelToPrediction(predictionModel);
 
         return predictionRepository.save(prediction);
@@ -64,8 +79,6 @@ public class PredictionServiceImpl implements PredictionService {
         predictionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Prediction doesn't exist at this address."));
 
-        checkPredictionModelTextIsValid(predictionModel);
-
         Prediction prediction = predictionMapper.predictionModelToPrediction(predictionModel);
         prediction.setId(id);
 
@@ -75,14 +88,5 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public void delete(Long id) {
         predictionRepository.deleteById(id);
-    }
-
-    private void checkPredictionModelTextIsValid(PredictionModel predictionModel) {
-        String predictionModelText = predictionModel.getText();
-        if (predictionModelText == null) {
-            throw new RuntimeException("Error! Text cannot be null.");
-        } else if (predictionModelText.isEmpty()) {
-            throw new RuntimeException("Error! Text cannot be empty.");
-        }
     }
 }

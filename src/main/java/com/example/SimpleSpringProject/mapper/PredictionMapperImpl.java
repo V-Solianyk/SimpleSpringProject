@@ -10,7 +10,7 @@ public class PredictionMapperImpl implements PredictionMapper {
     public PredictionModel predictionToPredictionModel(Prediction prediction) {
         PredictionModel predictionModel = new PredictionModel();
         predictionModel.setText(prediction.getText());
-        predictionModel.setPositive(prediction.isPositive());
+        predictionModel.setPositive(prediction.getPositive());
         return predictionModel;
     }
 
