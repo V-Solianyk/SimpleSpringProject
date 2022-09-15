@@ -10,8 +10,8 @@ public interface PredictionRepository extends PagingAndSortingRepository<Predict
 
     List<Prediction> findAllByPositive(boolean isPositive, Pageable pageable);
 
-    List<Prediction> findAllByTextContainsIgnoreCase(String keyword);
+    List<Prediction> findAllByTextContainsIgnoreCase(String keyword, Pageable pageable);
 
-    List<Prediction> findAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword);
+    List<Prediction> findAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword, Pageable pageable);
 
 }

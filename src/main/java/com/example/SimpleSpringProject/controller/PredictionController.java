@@ -30,14 +30,14 @@ public class PredictionController {
     }
 
     @GetMapping("/keyword")
-    List<PredictionModel> getAllByTextLike(@RequestParam("keyword") String keyword) {
-        return predictionService.getAllByTextContainsIgnoreCase(keyword);
+    List<PredictionModel> getAllByTextLike(@RequestParam("keyword") String keyword, Pageable pageable) {
+        return predictionService.getAllByTextContainsIgnoreCase(keyword, pageable);
     }
 
     @GetMapping("/keywordAndPositive")
     List<PredictionModel> getAllByPositiveAndTextLike(@RequestParam("positive") boolean isPositive,
-                                                      @RequestParam("keyword") String keyword) {
-        return predictionService.getAllByPositiveAndTextContainsIgnoreCase(isPositive, keyword);
+                                                      @RequestParam("keyword") String keyword, Pageable pageable) {
+        return predictionService.getAllByPositiveAndTextContainsIgnoreCase(isPositive, keyword, pageable);
     }
 
     @GetMapping("/{id}")

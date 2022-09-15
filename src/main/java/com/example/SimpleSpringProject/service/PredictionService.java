@@ -12,9 +12,10 @@ public interface PredictionService {
 
     List<PredictionModel> getAllByPositive(boolean isPositive, Pageable pageable);
 
-    List<PredictionModel> getAllByTextContainsIgnoreCase(String keyword);
+    List<PredictionModel> getAllByTextContainsIgnoreCase(String keyword, Pageable pageable);
 
-    List<PredictionModel> getAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword);
+    List<PredictionModel> getAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword,
+                                                                    Pageable pageable);
 
     PredictionModel get(Long id);
 

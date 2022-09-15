@@ -18,7 +18,6 @@ public class PredictionServiceImpl implements PredictionService {
     private final PredictionRepository predictionRepository;
     private final PredictionMapper predictionMapper;
 
-    // todo- додати пошук всіх за певними критеріями (+ сортування та пагінація, тобто розбиття на сторінки)
     //-todo юніт тести! про це я зовсім забув:)- змінити тип помилок
     //- повертати в контролері не сутність, а ResponseEntity (клас-обгортка для сутності від спрінга,
     // що дозволяє повертати разом із сутністю необхідний нам http код)
@@ -32,28 +31,29 @@ public class PredictionServiceImpl implements PredictionService {
 
     @Override
     public List<PredictionModel> getAll() {
-        return StreamSupport.stream(predictionRepository.findAll().spliterator(),false)
+        return StreamSupport.stream(predictionRepository.findAll().spliterator(), false)
                 .map(predictionMapper::predictionToPredictionModel)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PredictionModel> getAllByPositive(boolean isPositive, Pageable pageable) {
-        return predictionRepository.findAllByPositive(isPositive,pageable).stream()
+        return predictionRepository.findAllByPositive(isPositive, pageable).stream()
                 .map(predictionMapper::predictionToPredictionModel)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PredictionModel> getAllByTextContainsIgnoreCase(String keyword) {
-        return predictionRepository.findAllByTextContainsIgnoreCase(keyword).stream()
+    public List<PredictionModel> getAllByTextContainsIgnoreCase(String keyword, Pageable pageable) {
+        return predictionRepository.findAllByTextContainsIgnoreCase(keyword, pageable).stream()
                 .map(predictionMapper::predictionToPredictionModel)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PredictionModel> getAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword) {
-       return predictionRepository.findAllByPositiveAndTextContainsIgnoreCase(isPositive,keyword).stream()
+    public List<PredictionModel> getAllByPositiveAndTextContainsIgnoreCase(boolean isPositive, String keyword,
+                                                                           Pageable pageable) {
+        return predictionRepository.findAllByPositiveAndTextContainsIgnoreCase(isPositive, keyword, pageable).stream()
                 .map(predictionMapper::predictionToPredictionModel)
                 .collect(Collectors.toList());
     }

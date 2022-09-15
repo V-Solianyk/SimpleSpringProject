@@ -21,31 +21,47 @@ public class PredictionPreLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Prediction predictionOne = new Prediction();
-        predictionOne.setText("Ab Hello good day.");
+        predictionOne.setText("You should wait a little, and the future will bring you great joy.");
         predictionOne.setPositive(true);
 
         Prediction predictionTwo = new Prediction();
-        predictionTwo.setText("Good day.");
+        predictionTwo.setText("Share joy with others and enjoy it yourself.");
         predictionTwo.setPositive(true);
 
         Prediction predictionThree = new Prediction();
-        predictionThree.setText("hello good day.");
-        predictionThree.setPositive(false);
+        predictionThree.setText("Do your best and get the most.");
+        predictionThree.setPositive(true);
 
         Prediction predictionFour = new Prediction();
-        predictionFour.setText("B good day.");
+        predictionFour.setText("When bad weather rages around, your house protects warmth and comfort.");
         predictionFour.setPositive(true);
 
         Prediction predictionFive = new Prediction();
-        predictionFive.setText("Aa helLo Nice day");
+        predictionFive.setText("New knowledge will bring you success.");
         predictionFive.setPositive(true);
 
         Prediction predictionSix = new Prediction();
-        predictionSix.setText("HElLo Nice day");
+        predictionSix.setText("The weather is bad today");
         predictionSix.setPositive(false);
 
+        Prediction predictionSeven = new Prediction();
+        predictionSeven.setText("I haven't slept and I'm in a bad mood");
+        predictionSeven.setPositive(false);
+
+        Prediction predictionEight = new Prediction();
+        predictionEight.setText("Going back is a bad sign");
+        predictionEight.setPositive(false);
+
+        Prediction predictionNight = new Prediction();
+        predictionNight.setText("A black cat crossed the road, expect trouble");
+        predictionNight.setPositive(false);
+
+        Prediction predictionTen = new Prediction();
+        predictionTen.setText("I'm in a bad mood this morning");
+        predictionTen.setPositive(false);
+
         predictionRepository.saveAll(List.of(predictionOne, predictionTwo, predictionThree, predictionFour,
-                predictionFive, predictionSix));
+                predictionFive, predictionSix, predictionSeven, predictionEight, predictionNight, predictionTen));
 
     }
 }
