@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -18,7 +19,7 @@ public class PredictionServiceImpl implements PredictionService {
     private final PredictionRepository predictionRepository;
     private final PredictionMapper predictionMapper;
 
-    //-todo юніт тести! про це я зовсім забув:)- змінити тип помилок
+    //-todo юніт тести! про це я зовсім забув:) for controller
     //- повертати в контролері не сутність, а ResponseEntity (клас-обгортка для сутності від спрінга,
     // що дозволяє повертати разом із сутністю необхідний нам http код)
 
@@ -61,7 +62,7 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public PredictionModel get(Long id) {
         Prediction prediction = predictionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Prediction not found for ID : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Prediction not found for ID : " + id));
 
         return predictionMapper.predictionToPredictionModel(prediction);
     }
@@ -77,7 +78,7 @@ public class PredictionServiceImpl implements PredictionService {
     @Override
     public Prediction update(Long id, PredictionModel predictionModel) {
         predictionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Prediction doesn't exist at this address."));
+                .orElseThrow(() -> new EntityNotFoundException("Prediction doesn't exist at this address."));
 
         Prediction prediction = predictionMapper.predictionModelToPrediction(predictionModel);
         prediction.setId(id);
@@ -87,6 +88,9 @@ public class PredictionServiceImpl implements PredictionService {
 
     @Override
     public void delete(Long id) {
+        predictionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Prediction doesn't exist at this address."));
+
         predictionRepository.deleteById(id);
     }
 }

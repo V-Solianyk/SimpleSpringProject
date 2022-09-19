@@ -1,6 +1,7 @@
-package com.example.SimpleSpringProject.mapper;
+package com.example.SimpleSpringProject.mapper.impl;
 
 import com.example.SimpleSpringProject.entity.Prediction;
+import com.example.SimpleSpringProject.mapper.PredictionMapper;
 import com.example.SimpleSpringProject.model.PredictionModel;
 import org.springframework.stereotype.Component;
 

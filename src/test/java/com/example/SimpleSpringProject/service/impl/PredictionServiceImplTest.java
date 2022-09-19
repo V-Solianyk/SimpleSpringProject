@@ -11,9 +11,11 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 
 class PredictionServiceImplTest {
     PredictionRepository predictionRepository = Mockito.mock(PredictionRepository.class);
@@ -90,7 +92,32 @@ class PredictionServiceImplTest {
 
     @Test
     void getAllByPositiveAndTextContainsIgnoreCase() {
-//  todo написати тест
+        Prediction predictionOne = new Prediction();
+
+        Prediction predictionTwo = new Prediction();
+
+        Pageable pageable = PageRequest.of(0, 100);
+
+        PredictionModel predictionModel = new PredictionModel();
+        predictionModel.setPositive(true);
+        predictionModel.setText("Have a good day");
+
+        Mockito.when(predictionRepository.findAllByPositiveAndTextContainsIgnoreCase(true, "good",
+                        pageable))
+                .thenReturn(Arrays.asList(predictionOne, predictionTwo));
+
+        Mockito.when(predictionMapper.predictionToPredictionModel(Mockito.any(Prediction.class)))
+                .thenReturn(predictionModel);
+
+        List<PredictionModel> result = predictionService.getAllByPositiveAndTextContainsIgnoreCase(true,
+                "good", pageable);
+
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertTrue(StringUtils.containsIgnoreCase(result.get(0).getText(), "good"));
+        Assertions.assertTrue(result.get(0).isPositive());
+        Assertions.assertTrue(StringUtils.containsIgnoreCase(result.get(1).getText(), "good"));
+        Assertions.assertTrue(result.get(1).isPositive());
+
     }
 
     @Test
@@ -101,14 +128,14 @@ class PredictionServiceImplTest {
         Mockito.when(predictionRepository.findById(notExistingId))
                 .thenReturn(Optional.empty());
 
-        RuntimeException runtimeException = Assertions.assertThrows(RuntimeException.class,
+        EntityNotFoundException entityNotFoundException = Assertions.assertThrows(EntityNotFoundException.class,
                 () -> predictionService.get(notExistingId));
 
-        Assertions.assertEquals(expected, runtimeException.getMessage());
+        Assertions.assertEquals(expected, entityNotFoundException.getMessage());
     }
 
     @Test
-    void get_Exists(){
+    void get_Exists() {
         Long existingId = 5L;
         Prediction prediction = new Prediction();
         prediction.setText("Good day");
@@ -126,20 +153,100 @@ class PredictionServiceImplTest {
 
         PredictionModel result = predictionService.get(existingId);
 
-        Assertions.assertEquals(prediction.getPositive(),result.isPositive());
-        Assertions.assertEquals(prediction.getText(),result.getText());
+        Assertions.assertEquals(prediction.getPositive(), result.isPositive());
+        Assertions.assertEquals(prediction.getText(), result.getText());
 
     }
 
     @Test
     void create() {
+        PredictionModel predictionModel = new PredictionModel();
+        predictionModel.setText("Ok nice to meet you");
+        predictionModel.setPositive(true);
+
+        Prediction prediction = new Prediction();
+        prediction.setText(predictionModel.getText());
+        prediction.setPositive(predictionModel.isPositive());
+
+        Mockito.when(predictionMapper.predictionModelToPrediction(predictionModel))
+                .thenReturn(prediction);
+
+        Mockito.when(predictionRepository.save(Mockito.any(Prediction.class))).thenReturn(prediction);
+
+        Prediction result = predictionService.create(predictionModel);
+
+        Assertions.assertEquals(predictionModel.getText(), result.getText());
+        Assertions.assertEquals(predictionModel.isPositive(), result.getPositive());
+
     }
 
     @Test
-    void update() {
+    void update_NotExists() {
+        Long notExistingId = 20L;
+        PredictionModel predictionModel = new PredictionModel();
+        String expectedException = "Prediction doesn't exist at this address.";
+
+        Mockito.when(predictionRepository.findById(notExistingId))
+                .thenReturn(Optional.empty());
+
+        EntityNotFoundException entityNotFoundException =
+                Assertions.assertThrows(EntityNotFoundException.class,
+                        () -> predictionService.update(notExistingId, predictionModel));
+
+        Assertions.assertEquals(expectedException, entityNotFoundException.getMessage());
     }
 
     @Test
-    void delete() {
+    void update_Exists() {
+        Long existingId = 33L;
+
+        PredictionModel predictionModel = new PredictionModel();
+        predictionModel.setPositive(true);
+        predictionModel.setText("Hello, I'll try to learn English.");
+
+        Prediction prediction = new Prediction();
+        prediction.setPositive(predictionModel.isPositive());
+        prediction.setText(predictionModel.getText());
+
+        Mockito.when(predictionRepository.findById(existingId))
+                .thenReturn(Optional.of(prediction));
+
+        Mockito.when(predictionMapper.predictionModelToPrediction(predictionModel))
+                .thenReturn(prediction);
+
+        Mockito.when(predictionRepository.save(Mockito.any(Prediction.class)))
+                .thenReturn(prediction);
+
+        Prediction result = predictionService.update(existingId, predictionModel);
+
+        Assertions.assertEquals(predictionModel.isPositive(), result.getPositive());
+        Assertions.assertEquals(predictionModel.getText(), result.getText());
+        Assertions.assertEquals(existingId, result.getId());
+    }
+
+    @Test
+    void delete_NotExists() {
+        Long notExistingId = 10000L;
+        String expectedException = "Prediction doesn't exist at this address.";
+
+        Mockito.when(predictionRepository.findById(notExistingId))
+                .thenReturn(Optional.empty());
+
+        EntityNotFoundException entityNotFoundException = Assertions.assertThrows(EntityNotFoundException.class,
+                () -> predictionService.delete(notExistingId));
+
+        Assertions.assertEquals(expectedException, entityNotFoundException.getMessage());
+    }
+
+    @Test
+    void delete_Exists() {
+        Long existingId = 555L;
+        Prediction prediction = new Prediction();
+
+        Mockito.when(predictionRepository.findById(existingId))
+                .thenReturn(Optional.of(prediction));
+
+        predictionService.delete(existingId);
+        Mockito.verify(predictionRepository).deleteById(existingId);
     }
 }
