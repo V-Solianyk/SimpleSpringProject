@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/predictions")
@@ -36,6 +37,11 @@ public class PredictionController {
     @GetMapping("/positive")
     List<PredictionModel> getAllByPositive(@RequestParam("positive") boolean isPositive, Pageable pageable) {
         return predictionService.getAllByPositive(isPositive, pageable);
+        // List<PredictionModel> allByPositive = predictionService.getAllByPositive(isPositive, pageable);
+        //        return allByPositive.stream()
+        //                .peek(predictionModel -> predictionModel.setPositive(true))
+        //                .collect(Collectors.toList());
+        //todo
     }
 
     @GetMapping("/keyword")
@@ -66,9 +72,9 @@ public class PredictionController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<PredictionModel> deletePredictionById(@PathVariable Long id) {
-         predictionService.delete(id);
+        predictionService.delete(id);
 
-         return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -82,6 +82,7 @@ public class PredictionServiceImpl implements PredictionService {
 
         Prediction prediction = predictionMapper.predictionModelToPrediction(predictionModel);
         prediction.setId(id);
+        //todo що має повертати сетоди create and update рест стандарт.
 
         return predictionRepository.save(prediction);
     }
