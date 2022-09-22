@@ -173,10 +173,10 @@ class PredictionServiceImplTest {
 
         Mockito.when(predictionRepository.save(Mockito.any(Prediction.class))).thenReturn(prediction);
 
-        Prediction result = predictionService.create(predictionModel);
+        PredictionModel result = predictionService.create(predictionModel);
 
         Assertions.assertEquals(predictionModel.getText(), result.getText());
-        Assertions.assertEquals(predictionModel.isPositive(), result.getPositive());
+        Assertions.assertEquals(predictionModel.isPositive(), result.isPositive());
 
     }
 
@@ -217,11 +217,10 @@ class PredictionServiceImplTest {
         Mockito.when(predictionRepository.save(Mockito.any(Prediction.class)))
                 .thenReturn(prediction);
 
-        Prediction result = predictionService.update(existingId, predictionModel);
+        PredictionModel result = predictionService.update(existingId, predictionModel);
 
-        Assertions.assertEquals(predictionModel.isPositive(), result.getPositive());
+        Assertions.assertEquals(predictionModel.isPositive(), result.isPositive());
         Assertions.assertEquals(predictionModel.getText(), result.getText());
-        Assertions.assertEquals(existingId, result.getId());
     }
 
     @Test

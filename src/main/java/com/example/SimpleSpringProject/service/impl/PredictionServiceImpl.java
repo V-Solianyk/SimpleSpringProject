@@ -19,11 +19,6 @@ public class PredictionServiceImpl implements PredictionService {
     private final PredictionRepository predictionRepository;
     private final PredictionMapper predictionMapper;
 
-    //-todo юніт тести! про це я зовсім забув:) for controller
-    //- повертати в контролері не сутність, а ResponseEntity (клас-обгортка для сутності від спрінга,
-    // що дозволяє повертати разом із сутністю необхідний нам http код)
-
-
     @Autowired
     public PredictionServiceImpl(PredictionRepository predictionRepository, PredictionMapper mapper) {
         this.predictionRepository = predictionRepository;
@@ -68,23 +63,24 @@ public class PredictionServiceImpl implements PredictionService {
     }
 
     @Override
-    public Prediction create(PredictionModel predictionModel) {
+    public PredictionModel create(PredictionModel predictionModel) {
         Prediction prediction = predictionMapper.predictionModelToPrediction(predictionModel);
 
-        return predictionRepository.save(prediction);
+        predictionRepository.save(prediction);
+
+        return predictionModel;
     }
 
 
     @Override
-    public Prediction update(Long id, PredictionModel predictionModel) {
+    public PredictionModel update(Long id, PredictionModel predictionModel) {
         predictionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Prediction doesn't exist at this address."));
 
         Prediction prediction = predictionMapper.predictionModelToPrediction(predictionModel);
         prediction.setId(id);
-        //todo що має повертати сетоди create and update рест стандарт.
-
-        return predictionRepository.save(prediction);
+        predictionRepository.save(prediction);
+        return predictionModel;
     }
 
     @Override

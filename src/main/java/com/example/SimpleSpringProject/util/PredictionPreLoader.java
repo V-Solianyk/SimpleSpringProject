@@ -1,4 +1,4 @@
-package com.example.SimpleSpringProject.utility;
+package com.example.SimpleSpringProject.util;
 
 import com.example.SimpleSpringProject.entity.Prediction;
 import com.example.SimpleSpringProject.repository.PredictionRepository;
